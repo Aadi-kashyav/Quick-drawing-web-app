@@ -11,6 +11,11 @@ answer_holder = "";
 Score = 0;
 function draw(){
     check_sketch();
+    strokeWeight(13);
+    stroke(0);
+    if (mouseIsPressed){
+        line(pmouseX,pmouseY,mouseX,mouseY)
+    }
     if(drawn_sketch==sketch){
         answer_holder = "set";
         Score = Score+1;
@@ -42,5 +47,34 @@ function updateCanvas(){
 function setup(){
     canvas = createCanvas(280,280);
     canvas.center();
+    background("white");
+    canvas.mouseReleased(classifyCanvas);
+    synth = window.speechSynthesis;
+}
+function clearCanvas(){
     background("white")
+}
+function preload() {
+    classifier = ml5.imageClassifier('Doodlenet')
+}
+function draw() {
+    strokeWeight(13);
+    stroke(0);
+    if (mouseIsPressed){
+        line(pmouseX,pmouseY,mouseX,mouseY)
+    }
+}
+function gotResult(error,results){
+    if(error) {
+        console.error(error);
+    }
+    console.log(results);
+    drawn_sketch = results[0].label;
+    document.getElementById('sketch').innerHTML = 'Your sketch : ' + results[0].label;
+    document.getElementById('confidence').innerHTML = 'Confidence : ' + Math.round(results[0].confidence * 100) + "%";
+    utterThis = new SpeechSynthesisUtterance(results[0].label);
+    synth.speak(utterThis);
+}
+function classifyCanvas(){
+    classifier.classify(canvas,gotResult);
 }
