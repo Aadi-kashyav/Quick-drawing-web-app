@@ -57,13 +57,7 @@ function clearCanvas(){
 function preload() {
     classifier = ml5.imageClassifier('Doodlenet')
 }
-function draw() {
-    strokeWeight(13);
-    stroke(0);
-    if (mouseIsPressed){
-        line(pmouseX,pmouseY,mouseX,mouseY)
-    }
-}
+
 function gotResult(error,results){
     if(error) {
         console.error(error);
